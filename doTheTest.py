@@ -41,6 +41,7 @@ def begin():
     for i in range(depth):
         print(url+goods+"&s"+str(i*44))
         html = getHTMLText(url+goods+"&s"+str(i*44))
+        print(html)
         parserPage(goodList, html)
     printPage(goodList)
 

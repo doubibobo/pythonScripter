@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #url {
+            width: 68%;
+        }
+        
+        #text_wrap {
+            text-align: center;
+        }
+        
+        #ifr_wrap {
+            text-align: center;
+        }
+        
+        #footerOut {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            border-top: 1px solid #aaa;
+            padding: 10px 20px;
+            color: #888;
+            font-size: 12px;
+            text-align: center;
+            line-height: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="width:100%">
+        <div id='text_wrap'>
+            <textarea id="url" class="form-control" style="resize:none" rows="6" placeholder="请填写产品的网址，多个网址用Enter换行"></textarea>
+        </div>
+        <div class="col-xs-12 p0 pTop10">
+            <table style="width:100%;">
+                <tbody>
+                    <tr>
+
+                        <td style="vertical-align: top; ">
+                            <span style='float:right' class="fColor2 f13">说明！支持：淘宝、速卖通、wish、eBay、亚马逊、walmart</span>
+                        </td>
+                        <td style="vertical-align: top;width:250px;text-align:right; display:inline-block">
+                            <button id="crawlBtn" type="button" class="btn btn-primary mBottom5" onclick="single();">单品采集</button>
+                            <button id="crawlBtn1" type="button" class="btn btn-primary mBottom5" onclick="sort();">分类采集</button>
+                            <button type="button" class="btn btn-default mLeft5 mBottom5" onclick="document.getElementById('url').value='';">清　　空</button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id='ifr_wrap' style="width:100%">
+        <div>
+
+            <iframe style='width:68% ;height:600px' id="table" src="http://127.0.0.1:8080/table.html?type==none&&source==none&&url==none&&page==0">
+           
+        </iframe>
+            <div style='margin-right:62%;'>
+                <button onclick="look_temp();">未认领</button>
+                <button onclick="look_data();">已认领</button>
+            </div>
+        </div>
+        <div>
+            <button onclick="previous()">上一页</button>
+            <button onclick="next()">下一页</button>
+        </div>
+    </div>
+
+
+    <div id="footerOut">
+        Copyright &nbsp;©&nbsp; 2017 郑泉石&nbsp;&nbsp;<br>
+
+        <span>联系电话：18672661744</span><br>
+        <span>QQ：409876897</span><br>
+        <a href="javascript:" data-name="feedback">意见反馈</a>&nbsp;&nbsp;
+        <a target="_blank" href="http://help.dianxiaomi.cn">帮助手册</a>&nbsp;&nbsp;
+        <a target="_blank" href="http://www.dianxiaomi.com/about.htm">关于我们</a>&nbsp;&nbsp;
+        <a target="_blank" href="http://www.dianxiaomi.com/contact.htm">联系我们</a>
+
+    </div>
+</body>
+<script>
+    var page_now = 0;
+    var is_temp = 1;
+
+    function single() {
+        single_url = document.getElementById('url').value;
+        source = test_url(single_url);
+        if (source == 'none') {
+            alert("请输入正确的链接！");
+            return -1;
+        }
+        if (source == 'wish') {
+            single_url = String(single_url).replace('#', '?')
+        }
+        document.getElementById('table').src = "http://127.0.0.1:8080/table.html?" + "type==single&&page==0&&source==" + source + "&&url==" + single_url;
+
+    }
+
+    function sort()　 {
+        sort_url = document.getElementById('url').value;
+        source = test_url(sort_url);
+        if (source == 'none') {
+            alert("请输入正确的链接！");
+            return -1;
+        }
+        document.getElementById('table').src = "http://127.0.0.1:8080/table.html?" + "type==sort&&page==0&&source==" + source + "&&url==" + sort_url;
+    }
+
+    function test_url(url) {
+        flag = 'none';
+        if (url.indexOf('taobao') >= 0)
+            flag = 'taobao';
+        if (url.indexOf('amazon') >= 0)
+            flag = 'amazon';
+        if (url.indexOf('wish') >= 0)
+            flag = 'wish';
+        if (url.indexOf('aliexpress') >= 0)
+            flag = 'aliexpress';
+        if (url.indexOf('ebay') >= 0)
+            flag = 'ebay';
+        if (url.indexOf('walmart') >= 0)
+            flag = 'walmart';
+        return flag;
+    }
+
+    function next() {
+        page_now += 1;
+        if (is_temp == 1)
+            document.getElementById('table').src = "http://127.0.0.1:8080/table.html?type==none&&source==none&&url==none&&page==" + String(page_now);
+        else
+            document.getElementById('table').src = "http://127.0.0.1:8080/table.html?type==none&&source==none&&url==none&&page==" + String(page_now) + '&&table==data';
+
+    }
+
+    function previous() {
+        if (page_now == 0) {
+            alert('已经是第一页了')
+            return -1
+        }
+        page_now -= 1;
+        if (is_temp == 1)
+            document.getElementById('table').src = "http://127.0.0.1:8080/table.html?type==none&&source==none&&url==none&&page==" + String(page_now);
+        else
+            document.getElementById('table').src = "http://127.0.0.1:8080/table.html?type==none&&source==none&&url==none&&page==" + String(page_now) + '&&table==data';
+
+    }
+
+    function look_temp() {
+        is_temp = 1
+        page_now = 0
+        document.getElementById('table').src = "http://127.0.0.1:8080/table.html?type==none&&source==none&&url==none&&page==0"
+    }
+
+    function look_data() {
+        is_temp = 0
+        page_now = 0
+        document.getElementById('table').src = "http://127.0.0.1:8080/table.html?type==none&&source==none&&url==none&&page==0&&table==data"
+    }
+</script>
+
+</html>
